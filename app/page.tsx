@@ -1,7 +1,6 @@
-'use client'
+'use client';
 
 import { motion } from 'framer-motion';
-import { Button } from '@/components/ui/button';
 import { Verify } from './components/Verify';
 
 export default function Page() {

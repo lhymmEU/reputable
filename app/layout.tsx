@@ -2,7 +2,8 @@ import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
 import MiniKitProvider from "./components/minikit-provider";
-import dynamic from "next/dynamic";
+import { ErudaProvider } from "./components/Eruda";
+import React from "react";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -25,18 +26,11 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const ErudaProvider = dynamic(
-    () => import("./components/Eruda").then((c) => c.ErudaProvider),
-  );
   return (
-    <html lang="en">
+    <html lang="en" className={`${geistSans.variable} ${geistMono.variable}`}>
       <ErudaProvider>
         <MiniKitProvider>
-          <body
-            className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-          >
-            {children}
-          </body>
+          <body className="antialiased">{children}</body>
         </MiniKitProvider>
       </ErudaProvider>
     </html>
