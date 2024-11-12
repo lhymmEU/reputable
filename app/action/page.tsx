@@ -1,5 +1,5 @@
+import Action from "../components/Action";
+
 export default function Page() {
-    return (
-        <h1>This should be the action page.</h1>
-    );
+  return <Action />;
 }
