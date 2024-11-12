@@ -8,6 +8,7 @@ import {
 } from "@worldcoin/minikit-js";
 import { Button } from "@/components/ui/button";
 import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 
 export type VerifyCommandInput = {
   action: string;
@@ -26,6 +27,8 @@ const triggerVerify = () => {
 };
 
 export const Verify = () => {
+  const router = useRouter();
+
   useEffect(() => {
     if (!MiniKit.isInstalled()) {
       return;
@@ -54,7 +57,7 @@ export const Verify = () => {
         // TODO: Handle Success!
         const verifyResponseJson = await verifyResponse.json();
         if (verifyResponseJson.status === 200) {
-          console.log("Verification success!");
+          router.push("/action");
         }
       }
     );
