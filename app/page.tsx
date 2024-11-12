@@ -1,7 +1,8 @@
 'use client'
 
-import { motion } from 'framer-motion'
-import { Button } from '@/components/ui/button'
+import { motion } from 'framer-motion';
+import { Button } from '@/components/ui/button';
+import { Verify } from './components/Verify';
 
 export default function Page() {
   return (
@@ -57,9 +58,7 @@ export default function Page() {
         transition={{ duration: 0.8, delay: 0.5 }}
       >
         <h1 className="text-4xl font-bold mb-8 text-gray-800">Reputable</h1>
-        <Button size="lg" className="px-8 py-2 bg-black hover:bg-gray-700 text-white font-semibold rounded-full transition-colors duration-300">
-          Login
-        </Button>
+        <Verify />
       </motion.div>
     </div>
   )
