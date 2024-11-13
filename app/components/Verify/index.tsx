@@ -16,17 +16,24 @@ export type VerifyCommandInput = {
   verification_level?: VerificationLevel; // Default: Orb
 };
 
-const verifyPayload: VerifyCommandInput = {
-  action: "login", // This is your action ID from the Developer Portal
-  signal: "",
-  verification_level: VerificationLevel.Device, // Orb | Device
-};
+export const Verify = ({
+  actionName,
+  destination,
+  btnName,
+}: {
+  actionName: string;
+  destination: string;
+  btnName: string;
+}) => {
+  const verifyPayload: VerifyCommandInput = {
+    action: actionName, // This is your action ID from the Developer Portal
+    signal: "",
+    verification_level: VerificationLevel.Device, // Orb | Device
+  };
 
-const triggerVerify = () => {
-  MiniKit.commands.verify(verifyPayload);
-};
-
-export const Verify = () => {
+  const triggerVerify = () => {
+    MiniKit.commands.verify(verifyPayload);
+  };
   const router = useRouter();
 
   useEffect(() => {
@@ -57,7 +64,7 @@ export const Verify = () => {
         // TODO: Handle Success!
         const verifyResponseJson = await verifyResponse.json();
         if (verifyResponseJson.status === 200) {
-          router.push("/action");
+          router.push(destination);
         }
       }
     );
@@ -73,7 +80,7 @@ export const Verify = () => {
       className="px-8 py-2 bg-black hover:bg-gray-700 text-white font-semibold rounded-full transition-colors duration-300"
       onClick={triggerVerify}
     >
-      Login
+      {btnName}
     </Button>
   );
 };

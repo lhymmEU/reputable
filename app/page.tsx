@@ -57,7 +57,7 @@ export default function Page() {
         transition={{ duration: 0.8, delay: 0.5 }}
       >
         <h1 className="text-4xl font-bold mb-8 text-gray-800">Reputable</h1>
-        <Verify />
+        <Verify actionName='login' destination='/action' btnName='Login' />
       </motion.div>
     </div>
   )

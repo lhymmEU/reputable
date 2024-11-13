@@ -21,6 +21,7 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { Upload, ChevronRight, Star } from "lucide-react";
 import Decay from "../Decay";
+import { Verify } from "../Verify";
 
 type DecayFunction = "linear" | "exponential" | "polynomial" | "hyperbolic";
 
@@ -72,11 +73,6 @@ export default function ReputationForm() {
 
   const handlePreview = () => {
     setShowPreview(true);
-  };
-
-  const handleCreate = () => {
-    console.log("Creating reputation:", formData);
-    // Implement creation logic here
   };
 
   const ReputationCard = () => (
@@ -208,9 +204,11 @@ export default function ReputationForm() {
           {showPreview && (
             <div className="space-y-4 w-full">
               <ReputationCard />
-              <Button className="w-full" onClick={handleCreate}>
-                Create Reputation
-              </Button>
+              <Verify
+                actionName="create"
+                destination="/reputation/dashboard"
+                btnName="Create Reputation"
+              />
             </div>
           )}
         </CardFooter>
