@@ -20,10 +20,12 @@ export const Verify = ({
   actionName,
   destination,
   btnName,
+  actionData,
 }: {
   actionName: string;
   destination: string;
   btnName: string;
+  actionData?: string;
 }) => {
   const verifyPayload: VerifyCommandInput = {
     action: actionName, // This is your action ID from the Developer Portal
@@ -48,22 +50,40 @@ export const Verify = ({
           return console.log("Error payload", response);
         }
 
+        let constructedBody = "";
+
+        // Construct different payloads based on the action
+        if (actionName === "login") {
+          constructedBody = JSON.stringify({
+            // User identifier - nullifier - is included in the payload
+            payload: response as ISuccessResult, // Parses only the fields we need to verify
+            action: verifyPayload.action,
+            signal: verifyPayload.signal, // Optional
+            actionData: undefined, // No action data for login
+          });
+        } else if (actionName === "create") {
+          constructedBody = JSON.stringify({
+            // User identifier - nullifier - is included in the payload
+            payload: response as ISuccessResult, // Parses only the fields we need to verify
+            action: verifyPayload.action,
+            signal: verifyPayload.signal, // Optional
+            actionData: actionData, // The newly created reputation data
+          });
+        }
+
         // Verify the proof in the backend
         const verifyResponse = await fetch("/api/verify", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({
-            payload: response as ISuccessResult, // Parses only the fields we need to verify
-            action: verifyPayload.action,
-            signal: verifyPayload.signal, // Optional
-          }),
+          body: constructedBody,
         });
 
         // TODO: Handle Success!
         const verifyResponseJson = await verifyResponse.json();
         if (verifyResponseJson.status === 200) {
+          console.log("User verified successfully", verifyResponseJson);
           router.push(destination);
         }
       }

@@ -208,6 +208,7 @@ export default function ReputationForm() {
                 actionName="create"
                 destination="/reputation/dashboard"
                 btnName="Create Reputation"
+                actionData={JSON.stringify(formData)}
               />
             </div>
           )}

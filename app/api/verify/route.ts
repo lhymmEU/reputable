@@ -4,15 +4,18 @@ import {
   ISuccessResult,
 } from "@worldcoin/minikit-js";
 import { NextRequest, NextResponse } from "next/server";
+import { connect, disConnect, createReputation, authUser } from "@/app/db/graphDB";
 
 interface IRequestPayload {
   payload: ISuccessResult;
   action: string;
   signal: string | undefined;
+  actionData: string | undefined;
 }
 
+// This route will always return a user's information on successful verification
 export async function POST(req: NextRequest) {
-  const { payload, action, signal } = (await req.json()) as IRequestPayload;
+  const { payload, action, signal, actionData } = (await req.json()) as IRequestPayload;
   const app_id = process.env.APP_ID as `app_${string}`;
   const verifyRes = (await verifyCloudProof(
     payload,
@@ -24,9 +27,24 @@ export async function POST(req: NextRequest) {
   console.log(verifyRes);
 
   if (verifyRes.success) {
-    // This is where you should perform backend actions if the verification succeeds
-    // Such as, setting a user as "verified" in a database
-    return NextResponse.json({ verifyRes, status: 200 });
+    const driver = await connect();
+    let res = {};
+    // Create a new reputation node in the graph database
+    if (action === "create") {
+      // res = await createReputation(driver, "");
+    } else if (action === "login") {
+      console.log(payload.nullifier_hash);
+      res = await authUser(driver, { userId: payload.nullifier_hash });
+    }
+
+    if (res !== undefined) {
+      await disConnect(driver);
+      return NextResponse.json({ user: JSON.stringify(res), status: 200 });
+    } else {
+      await disConnect(driver);
+      return NextResponse.json({ verifyRes, status: 400 });
+    }
+    
   } else {
     // This is where you should handle errors from the World ID /verify endpoint.
     // Usually these errors are due to a user having already verified.
