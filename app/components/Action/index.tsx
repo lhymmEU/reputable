@@ -4,13 +4,17 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { StarIcon, ShieldCheckIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { useUserContext } from "../user-provider";
 
 export default function Action() {
   const router = useRouter();
+  const { userData } = useUserContext();
 
   const handleCreateRep = () => {
     router.push("/reputation/create");
   }
+
+  console.log("User context is working: ", userData);
 
   return (
     <div className="min-h-screen bg-gray-100 flex flex-col items-center p-4">

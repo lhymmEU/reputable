@@ -9,6 +9,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { useUserContext } from "../user-provider";
 
 export type VerifyCommandInput = {
   action: string;
@@ -32,6 +33,8 @@ export const Verify = ({
     signal: "",
     verification_level: VerificationLevel.Device, // Orb | Device
   };
+
+  const { setUserData } = useUserContext();
 
   const triggerVerify = () => {
     MiniKit.commands.verify(verifyPayload);
@@ -59,7 +62,7 @@ export const Verify = ({
             payload: response as ISuccessResult, // Parses only the fields we need to verify
             action: verifyPayload.action,
             signal: verifyPayload.signal, // Optional
-            actionData: undefined, // No action data for login
+            actionData: actionData, // Username
           });
         } else if (actionName === "create") {
           constructedBody = JSON.stringify({
@@ -84,6 +87,7 @@ export const Verify = ({
         const verifyResponseJson = await verifyResponse.json();
         if (verifyResponseJson.status === 200) {
           console.log("User verified successfully", verifyResponseJson);
+          setUserData(verifyResponseJson);
           router.push(destination);
         }
       }

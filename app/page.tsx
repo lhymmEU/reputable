@@ -1,9 +1,12 @@
-'use client';
+"use client";
 
-import { motion } from 'framer-motion';
-import { Verify } from './components/Verify';
+import { motion } from "framer-motion";
+import { Verify } from "./components/Verify";
+import { useState } from "react";
 
 export default function Page() {
+  const [username, setUsername] = useState("");
+
   return (
     <div className="relative h-screen w-full overflow-hidden bg-gray-100 flex flex-col items-center justify-center">
       {/* Animated background */}
@@ -32,8 +35,8 @@ export default function Page() {
               transition={{
                 duration: 20,
                 repeat: Infinity,
-                repeatType: 'reverse',
-                ease: 'easeInOut',
+                repeatType: "reverse",
+                ease: "easeInOut",
                 delay: i * 0.2,
               }}
             >
@@ -57,8 +60,24 @@ export default function Page() {
         transition={{ duration: 0.8, delay: 0.5 }}
       >
         <h1 className="text-4xl font-bold mb-8 text-gray-800">Reputable</h1>
-        <Verify actionName='login' destination='/action' btnName='Login' />
+        <div className="flex flex-col items-start">
+          <label
+            htmlFor="username"
+            className="mb-2 text-sm font-medium text-gray-700"
+          >
+            Username
+          </label>
+          <input
+            type="text"
+            id="username"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+            className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+            placeholder="Enter your username"
+          />
+        </div>
+        <Verify actionName="login" destination="/action" btnName="Login" actionData="username" />
       </motion.div>
     </div>
-  )
+  );
 }

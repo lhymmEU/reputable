@@ -3,6 +3,7 @@ import localFont from "next/font/local";
 import "./globals.css";
 import MiniKitProvider from "./components/minikit-provider";
 import { ErudaProvider } from "./components/Eruda";
+import { UserProvider } from "./components/user-provider";
 import React from "react";
 
 const geistSans = localFont({
@@ -30,7 +31,9 @@ export default function RootLayout({
     <html lang="en" className={`${geistSans.variable} ${geistMono.variable}`}>
       <ErudaProvider>
         <MiniKitProvider>
-          <body className="antialiased">{children}</body>
+          <UserProvider>
+            <body className="antialiased">{children}</body>
+          </UserProvider>
         </MiniKitProvider>
       </ErudaProvider>
     </html>

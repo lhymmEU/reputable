@@ -34,7 +34,7 @@ export async function POST(req: NextRequest) {
       // res = await createReputation(driver, "");
     } else if (action === "login") {
       console.log(payload.nullifier_hash);
-      res = await authUser(driver, { userId: payload.nullifier_hash });
+      res = await authUser(driver, { userId: payload.nullifier_hash, username: actionData });
     }
 
     if (res !== undefined) {

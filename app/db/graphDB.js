@@ -87,9 +87,10 @@ export const authUser = async (driver, info) => {
     // For newly created users the reputation array should be empty.
     const res = await session.executeWrite((tx) =>
       tx.run(
-        `MERGE (n:WorldUser { userId: $id }) RETURN n`,
+        `MERGE (n:WorldUser { userId: $id, username: $username }) RETURN n`,
         {
           id: info.userId,
+          username: info.username,
         }
       )
     );
