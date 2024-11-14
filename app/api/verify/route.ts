@@ -31,7 +31,8 @@ export async function POST(req: NextRequest) {
     let res = {};
     // Create a new reputation node in the graph database
     if (action === "create") {
-      // res = await createReputation(driver, "");
+      const actionDataJson = actionData ? JSON.parse(actionData) : {};
+      res = await createReputation(driver, actionDataJson);
     } else if (action === "login") {
       console.log(payload.nullifier_hash);
       res = await authUser(driver, { userId: payload.nullifier_hash, username: actionData });

@@ -34,15 +34,13 @@ export const disConnect = async (driver) => {
  * @returns {Promise<boolean>}
  *
  * @typedef {Object} ReputationInfo
+ * @property {string} creator - The identifier of the creator.
  * @property {string} name - The name of the reputation.
  * @property {string} skill - To which skill category the reputation belongs.
  * @property {string} description - The description of the reputation.
  * @property {string} deliverable - The requirements to successfully claim the repuation.
- * @property {DecayFunction} decay - The decay function of the reputation.
- *
- * @typedef {Object} DecayFunction
- * @property {string} name - The name of the decay function.
- * @property {number} params - The value of the parameters of the decay function.
+ * @property {string} decayFn - The decay function of the reputation.
+ * @property {string} decayParam - The parameters of the dacay function.
  */
 export const createReputation = async (driver, info) => {
   // Open a session
@@ -50,13 +48,27 @@ export const createReputation = async (driver, info) => {
   // Execute the write command
   const res = await session.executeWrite((tx) =>
     tx.run(
-      `MERGE (n:Reputation { name: $name, skill: $skill, description: $description, deliverable: $deliverable, decay: $decay }) RETURN n`,
+      `
+      MATCH (u:WorldUser { userId: $creator })
+      MERGE (r:Reputation {
+        name: $name,
+        skill: $skill,
+        description: $description,
+        deliverable: $deliverable,
+        decayFn: $decayFn,
+        decayParam: $decayParam
+      })
+      MERGE (u)-[:CREATED]->(r) // Creates the relationship
+      RETURN r
+      `,
       {
+        creator: info.creator,
         name: info.name,
         skill: info.skill,
         description: info.description,
         deliverable: info.deliverable,
-        decay: info.decay,
+        decayFn: info.decayFn,
+        decayParam: info.decayParam,
       }
     )
   );
@@ -75,12 +87,9 @@ export const authUser = async (driver, info) => {
   const session = driver.session();
   // Verify if the user already exists.
   const existanceResults = await session.executeRead((tx) =>
-    tx.run(
-      `MATCH (n:WorldUser { userId: $id }) RETURN n`,
-      {
-        id: info.userId,
-      }
-    )
+    tx.run(`MATCH (n:WorldUser { userId: $id }) RETURN n`, {
+      id: info.userId,
+    })
   );
 
   // If the user does not exist, create a new user.
@@ -95,18 +104,20 @@ export const authUser = async (driver, info) => {
         }
       )
     );
-  
-    console.log("Returns from creating a new user: ", res.records[0].get("n").properties);
+
+    console.log(
+      "Returns from creating a new user: ",
+      res.records[0].get("n").properties
+    );
 
     if (res.records.length === 0) {
       return undefined;
     }
-  
+
     return res.records[0].get("n").properties;
   } else {
     // If the user already exists, retrieve the user's information.
     const user = existanceResults.records[0].get("n");
     return user.properties;
   }
-
 };

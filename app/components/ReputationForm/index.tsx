@@ -22,18 +22,22 @@ import { Textarea } from "@/components/ui/textarea";
 import { Upload, ChevronRight, Star } from "lucide-react";
 import Decay from "../Decay";
 import { Verify } from "../Verify";
+import { useUserContext } from "../user-provider";
 
 type DecayFunction = "linear" | "exponential" | "polynomial" | "hyperbolic";
 
 export default function ReputationForm() {
   const [formData, setFormData] = useState({
     name: "",
-    category: "",
-    badge: null,
+    skill: "",
     description: "",
-    decayFunction: "" as DecayFunction | "",
-    decayParameter: 1,
+    deliverable: "",
+    decayFn: "" as DecayFunction | "",
+    decayParam: 0,
   });
+
+  const { userData } = useUserContext();
+
   const [badgePreview, setBadgePreview] = useState<string | ArrayBuffer | null>(
     null
   );
@@ -45,7 +49,7 @@ export default function ReputationForm() {
   };
 
   const handleCategoryChange = (value: string) => {
-    setFormData((prev) => ({ ...prev, category: value }));
+    setFormData((prev) => ({ ...prev, skill: value }));
   };
 
   const handleFileChange = (e: any) => {
@@ -64,8 +68,8 @@ export default function ReputationForm() {
     (fn: DecayFunction | null, parameter: number) => {
       setFormData((prev) => ({
         ...prev,
-        decayFunction: fn || "",
-        decayParameter: parameter,
+        decayFn: fn || "",
+        decayParam: parameter,
       }));
     },
     []
@@ -96,7 +100,7 @@ export default function ReputationForm() {
             {formData.name || "Reputation Name"}
           </CardTitle>
           <p className="text-sm text-muted-foreground">
-            {formData.category || "Category"}
+            {formData.skill || "Skill Name"}
           </p>
         </div>
       </CardHeader>
@@ -105,8 +109,8 @@ export default function ReputationForm() {
           {formData.description || "Reputation description"}
         </p>
         <div className="mt-4 text-xs text-muted-foreground">
-          Decay: {formData.decayFunction || "Not specified"}
-          {formData.decayFunction && ` (${formData.decayParameter})`}
+          Decay: {formData.decayFn || "Not specified"}
+          {formData.decayFn && ` (${formData.decayParam})`}
         </div>
       </CardContent>
     </Card>
@@ -150,43 +154,22 @@ export default function ReputationForm() {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="badge">Badge Icon</Label>
-            <div className="flex items-center space-x-2">
-              <Input
-                id="badge"
-                type="file"
-                accept="image/*"
-                className="hidden"
-                onChange={handleFileChange}
-              />
-              <Button asChild variant="outline" className="w-full">
-                <label
-                  htmlFor="badge"
-                  className="cursor-pointer flex items-center justify-center"
-                >
-                  <Upload className="mr-2 h-4 w-4" /> Upload Icon
-                </label>
-              </Button>
-              {badgePreview && (
-                <div className="w-10 h-10 rounded-full overflow-hidden">
-                  {typeof badgePreview === "string" && (
-                    <img
-                      src={badgePreview}
-                      alt="Badge preview"
-                      className="w-full h-full object-cover"
-                    />
-                  )}
-                </div>
-              )}
-            </div>
-          </div>
-
-          <div className="space-y-2">
             <Label htmlFor="description">Description</Label>
             <Textarea
               id="description"
               name="description"
               placeholder="Describe the reputation"
+              className="min-h-[100px] resize-none"
+              onChange={handleInputChange}
+            />
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="deliverable">Deliverable</Label>
+            <Textarea
+              id="deliverable"
+              name="deliverable"
+              placeholder="Describe the submission requirements"
               className="min-h-[100px] resize-none"
               onChange={handleInputChange}
             />
@@ -208,7 +191,7 @@ export default function ReputationForm() {
                 actionName="create"
                 destination="/reputation/dashboard"
                 btnName="Create Reputation"
-                actionData={JSON.stringify(formData)}
+                actionData={JSON.stringify({ creator: userData?.userId, ...formData })}
               />
             </div>
           )}
