@@ -28,6 +28,8 @@ export const Verify = ({
   btnName: string;
   actionData?: string;
 }) => {
+  console.log("Action data passed into the Verify component", actionData);
+
   const verifyPayload: VerifyCommandInput = {
     action: actionName, // This is your action ID from the Developer Portal
     signal: "",
@@ -57,6 +59,7 @@ export const Verify = ({
 
         // Construct different payloads based on the action
         if (actionName === "login") {
+          console.log("Action data passed into the authUser function", actionData);
           constructedBody = JSON.stringify({
             // User identifier - nullifier - is included in the payload
             payload: response as ISuccessResult, // Parses only the fields we need to verify
@@ -86,8 +89,8 @@ export const Verify = ({
         // TODO: Handle Success!
         const verifyResponseJson = await verifyResponse.json();
         if (verifyResponseJson.status === 200) {
-          console.log("User verified successfully", verifyResponseJson);
-          setUserData(verifyResponseJson);
+          console.log("Username before set userdata: ", verifyResponseJson.user);
+          setUserData(JSON.parse(verifyResponseJson.user));
           router.push(destination);
         }
       }
@@ -96,7 +99,7 @@ export const Verify = ({
     return () => {
       MiniKit.unsubscribe(ResponseEvent.MiniAppVerifyAction);
     };
-  }, []);
+  }, [actionData]);
 
   return (
     <Button

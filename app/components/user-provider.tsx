@@ -1,12 +1,26 @@
 "use client";
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useState, ReactNode, Dispatch, SetStateAction } from "react";
 
-const UserContext = createContext({ userData: null, setUserData: (value: any) => {} });
+// Define the structure of the userData object
+interface UserData {
+  userId: string;
+  username: string;
+}
 
-import { ReactNode } from "react";
+// Define the shape of the context value
+interface UserContextType {
+  userData: UserData | null;
+  setUserData: Dispatch<SetStateAction<UserData | null>>;
+}
+
+// Initialize context with a default value of null or empty functions
+const UserContext = createContext<UserContextType>({
+  userData: null,
+  setUserData: () => {},
+});
 
 export const UserProvider = ({ children }: { children: ReactNode }) => {
-  const [userData, setUserData] = useState(null);
+  const [userData, setUserData] = useState<UserData | null>(null);
 
   return (
     <UserContext.Provider value={{ userData, setUserData }}>

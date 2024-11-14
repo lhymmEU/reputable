@@ -9,16 +9,16 @@ import { useUserContext } from "../user-provider";
 export default function Action() {
   const router = useRouter();
   const { userData } = useUserContext();
+  console.log("User data from context in action page: ", userData);
 
   const handleCreateRep = () => {
     router.push("/reputation/create");
   }
 
-  console.log("User context is working: ", userData);
-
   return (
     <div className="min-h-screen bg-gray-100 flex flex-col items-center p-4">
       <h1 className="text-3xl font-bold text-gray-800 mb-8 mt-12">Reputable</h1>
+      {userData && <h1 className="text-3xl font-bold text-gray-800 mb-8 mt-12">{userData.username}</h1>}
 
       <div className="w-full max-w-md space-y-6" onClick={handleCreateRep}>
         <Card className="bg-gradient-to-br from-blue-500 to-purple-600 text-white rounded-xl overflow-hidden transition-all duration-300 hover:shadow-xl">

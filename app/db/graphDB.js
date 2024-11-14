@@ -71,6 +71,7 @@ export const createReputation = async (driver, info) => {
 // This function first verify if a user already exists,
 // If so, it will retrieve the user's information, otherwise it will create a new user.
 export const authUser = async (driver, info) => {
+  console.log("Authenticating user: ", info);
   const session = driver.session();
   // Verify if the user already exists.
   const existanceResults = await session.executeRead((tx) =>
@@ -95,6 +96,8 @@ export const authUser = async (driver, info) => {
       )
     );
   
+    console.log("Returns from creating a new user: ", res.records[0].get("n").properties);
+
     if (res.records.length === 0) {
       return undefined;
     }

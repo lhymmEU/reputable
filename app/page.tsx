@@ -6,6 +6,11 @@ import { useState } from "react";
 
 export default function Page() {
   const [username, setUsername] = useState("");
+  const [submittedUsername, setSubmittedUsername] = useState("");
+
+  const handleSubmit = () => {
+    setSubmittedUsername(username);
+  };
 
   return (
     <div className="relative h-screen w-full overflow-hidden bg-gray-100 flex flex-col items-center justify-center">
@@ -75,8 +80,11 @@ export default function Page() {
             className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
             placeholder="Enter your username"
           />
+          <button onClick={handleSubmit} className="mt-4 btn-primary">
+            Submit
+          </button>
         </div>
-        <Verify actionName="login" destination="/action" btnName="Login" actionData="username" />
+        <Verify actionName="login" destination="/action" btnName="Login" actionData={submittedUsername} />
       </motion.div>
     </div>
   );
