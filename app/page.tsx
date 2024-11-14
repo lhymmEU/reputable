@@ -3,14 +3,19 @@
 import { motion } from "framer-motion";
 import { Verify } from "./components/Verify";
 import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Check } from 'lucide-react';
 
 export default function Page() {
   const [username, setUsername] = useState("");
   const [submittedUsername, setSubmittedUsername] = useState("");
+  const [isSubmitted, setIsSubmitted] = useState(false);
 
   const handleSubmit = () => {
     setSubmittedUsername(username);
+    setIsSubmitted(true)
   };
+
 
   return (
     <div className="relative h-screen w-full overflow-hidden bg-gray-100 flex flex-col items-center justify-center">
@@ -65,13 +70,7 @@ export default function Page() {
         transition={{ duration: 0.8, delay: 0.5 }}
       >
         <h1 className="text-4xl font-bold mb-8 text-gray-800">Reputable</h1>
-        <div className="flex flex-col items-start">
-          <label
-            htmlFor="username"
-            className="mb-2 text-sm font-medium text-gray-700"
-          >
-            Username
-          </label>
+        <div className="flex items-center justify-center mb-4 space-x-2">
           <input
             type="text"
             id="username"
@@ -80,11 +79,33 @@ export default function Page() {
             className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
             placeholder="Enter your username"
           />
-          <button onClick={handleSubmit} className="mt-4 btn-primary">
-            Submit
-          </button>
+          <Button
+            onClick={handleSubmit}
+            className="relative overflow-hidden transition-all duration-300 ease-in-out"
+            disabled={isSubmitted}
+          >
+            <span
+              className={`transition-opacity duration-300 ${
+                isSubmitted ? "opacity-0" : "opacity-100"
+              }`}
+            >
+              Submit
+            </span>
+            <span
+              className={`absolute inset-0 flex items-center justify-center transition-opacity duration-300 ${
+                isSubmitted ? "opacity-100" : "opacity-0"
+              }`}
+            >
+              <Check className="h-5 w-5 text-green-500" />
+            </span>
+          </Button>
         </div>
-        <Verify actionName="login" destination="/action" btnName="Login" actionData={submittedUsername} />
+        <Verify
+          actionName="login"
+          destination="/action"
+          btnName="Login"
+          actionData={submittedUsername}
+        />
       </motion.div>
     </div>
   );
