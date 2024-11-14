@@ -86,11 +86,12 @@ export const Verify = ({
           body: constructedBody,
         });
 
-        // TODO: Handle Success!
         const verifyResponseJson = await verifyResponse.json();
         if (verifyResponseJson.status === 200) {
-          console.log("Username before set userdata: ", verifyResponseJson.user);
-          setUserData(JSON.parse(verifyResponseJson.user));
+          if (actionName === "login") {
+            console.log("Username before set userdata: ", verifyResponseJson.user);
+            setUserData(JSON.parse(verifyResponseJson.user));
+          }
           router.push(destination);
         }
       }

@@ -80,6 +80,28 @@ export const createReputation = async (driver, info) => {
   return true;
 };
 
+export const getReputation = async (driver, userId) => {
+  const session = driver.session();
+  const res = await session.executeRead((tx) =>
+    tx.run(
+      `
+      MATCH (u:WorldUser { userId: $userId })-[:CREATED]->(r:Reputation)
+      RETURN r
+      `,
+      {
+        userId: userId,
+      }
+    )
+  );
+
+  if (res.records.length === 0) {
+    return [];
+  }
+
+  // Map over the records to extract the properties of each "r" node
+  return res.records.map((record) => record.get("r").properties);
+};
+
 // This function first verify if a user already exists,
 // If so, it will retrieve the user's information, otherwise it will create a new user.
 export const authUser = async (driver, info) => {
