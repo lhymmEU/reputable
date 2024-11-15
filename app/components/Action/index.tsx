@@ -15,6 +15,10 @@ export default function Action() {
     router.push("/reputation/create");
   };
 
+  const handleMyRep = () => {
+    router.push("/reputation/dashboard");
+  };
+
   return (
     <div className="min-h-screen bg-gray-100 flex flex-col items-center p-4">
       <h1 className="text-3xl font-bold text-gray-800 mb-8 mt-12">Reputable</h1>
@@ -24,8 +28,11 @@ export default function Action() {
         </h1>
       )}
 
-      <div className="w-full max-w-md space-y-6" onClick={handleCreateRep}>
-        <Card className="bg-gradient-to-br from-blue-500 to-purple-600 text-white rounded-xl overflow-hidden transition-all duration-300 hover:shadow-xl">
+      <div className="w-full max-w-md space-y-6">
+        <Card
+          onClick={handleCreateRep}
+          className="bg-gradient-to-br from-blue-500 to-purple-600 text-white rounded-xl overflow-hidden transition-all duration-300 hover:shadow-xl"
+        >
           <CardHeader className="pb-2">
             <CardTitle className="text-lg font-medium">
               Create Reputation
@@ -47,7 +54,10 @@ export default function Action() {
           </CardContent>
         </Card>
 
-        <Card className="bg-gradient-to-br from-green-500 to-teal-600 text-white rounded-xl overflow-hidden transition-all duration-300 hover:shadow-xl">
+        <Card
+          onClick={handleMyRep}
+          className="bg-gradient-to-br from-green-500 to-teal-600 text-white rounded-xl overflow-hidden transition-all duration-300 hover:shadow-xl"
+        >
           <CardHeader className="pb-2">
             <CardTitle className="text-lg font-medium">My Reputation</CardTitle>
           </CardHeader>

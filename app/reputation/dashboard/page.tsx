@@ -49,8 +49,9 @@ export default function Page() {
   }, [userData?.userId]);
 
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col p-8 space-y-2">
       <h1 className="text-2xl font-bold mb-4">Reputation Dashboard</h1>
+      <button className="bg-black text-white w-full rounded-full py-2">Browse Reputation</button>
       <ul className="space-y-4">
         {reputationsJson.map((rep: Reputation, index) => (
           <li key={index}>
