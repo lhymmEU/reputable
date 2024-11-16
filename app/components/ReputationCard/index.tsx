@@ -4,6 +4,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { ArrowDownRight } from "lucide-react";
 import { useState } from "react";
+import { claimRep } from "@/app/db/graphDB";
+import { useUserContext } from "../user-provider";
 
 interface ReputationCardProps {
   name: string;
@@ -16,9 +18,38 @@ interface ReputationCardProps {
 
 export default function ReputationCard(cardInfo: ReputationCardProps) {
   const [inputValue, setInputValue] = useState("");
+  const { userData } = useUserContext();
 
   const handleInputChange = (e: any) => {
     setInputValue(e.target.value);
+  }
+
+  const handleClaim = async() => {
+    try {
+      const response = await fetch('/api/claim', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          userId: userData?.userId,
+          repName: cardInfo.name,
+          link: inputValue
+        })
+      });
+
+      console.log("Claiming links submitted: ", inputValue);
+
+      if (!response.ok) {
+        throw new Error('Failed to claim reputation');
+      }
+
+      const data = await response.json();
+      console.log('Claim successful:', data);
+      setInputValue(''); // Clear input after successful claim
+    } catch (error) {
+      console.error('Error claiming reputation:', error);
+    }
   }
 
   return (
@@ -53,7 +84,7 @@ export default function ReputationCard(cardInfo: ReputationCardProps) {
               Decay Rate: {cardInfo.decayParam}
             </span>
           </div>
-          <button className="rounded-full bg-black text-white px-4 text-sm">Claim</button>
+          <button onClick={handleClaim} className="rounded-full bg-black text-white px-4 text-sm">Claim</button>
         </div>
       </CardContent>
     </Card>

@@ -102,6 +102,37 @@ export const getReputation = async (driver, userId) => {
   return res.records.map((record) => record.get("r").properties);
 };
 
+export const claimRep = async (driver, info) => {
+  const session = driver.session();
+  try {
+    const claimResult = await session.executeWrite((tx) =>
+      tx.run(
+        `
+        MATCH (n:WorldUser { userId: $userId })
+        MERGE (r:Reputation { id: $repName }) 
+        MERGE (n)-[c:HAS_REPUTATION { submission: $link }]->(r)
+        `,
+        {
+          userId: info.userId,
+          repName: info.repName, // Include the ID or unique property of the Reputation node
+          link: info.link, // Pass the link to the submission
+        }
+      )
+    );
+
+    if (claimResult.records.length === 0) {
+      return undefined;
+    }
+
+    return claimResult.records[0].get("c").properties;
+  } catch (error) {
+    console.error("Error claiming reputation:", error);
+    throw error;
+  } finally {
+    await session.close();
+  }
+};
+
 // This function first verify if a user already exists,
 // If so, it will retrieve the user's information, otherwise it will create a new user.
 export const authUser = async (driver, info) => {
