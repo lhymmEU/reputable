@@ -4,7 +4,7 @@ import {
   ISuccessResult,
 } from "@worldcoin/minikit-js";
 import { NextRequest, NextResponse } from "next/server";
-import { connect, disConnect, createReputation, authUser } from "@/app/db/graphDB";
+import { connect, disConnect, createReputation, authUser, claimRep } from "@/app/db/graphDB";
 
 interface IRequestPayload {
   payload: ISuccessResult;
@@ -36,6 +36,9 @@ export async function POST(req: NextRequest) {
     } else if (action === "login") {
       console.log(payload.nullifier_hash);
       res = await authUser(driver, { userId: payload.nullifier_hash, username: actionData });
+    } else if (action === "claim") {
+      const actionDataJson = actionData ? JSON.parse(actionData) : {};
+      res = await claimRep(driver, { userId: actionDataJson?.userId, repName: actionDataJson?.repName, link: actionDataJson?.link });
     }
 
     if (res !== undefined) {

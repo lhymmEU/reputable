@@ -75,6 +75,13 @@ export const Verify = ({
             signal: verifyPayload.signal, // Optional
             actionData: actionData, // The newly created reputation data
           });
+        } else if (actionName === "claim") {
+          constructedBody = JSON.stringify({
+            payload: response as ISuccessResult,
+            action: verifyPayload.action,
+            signal: verifyPayload.signal,
+            actionData: actionData,
+          });
         }
 
         // Verify the proof in the backend

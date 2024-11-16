@@ -103,6 +103,7 @@ export const getReputation = async (driver, userId) => {
 };
 
 export const claimRep = async (driver, info) => {
+  console.log("Claiming reputation: ", info);
   const session = driver.session();
   try {
     const claimResult = await session.executeWrite((tx) =>
